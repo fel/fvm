@@ -65,6 +65,11 @@ fvm() {
 	}
 
 	get_major() {  #takes a full version number as it's only argument and returns the first digit
+		if [ `cutstr $1 3` = "4.5" ]; then
+			echo "hero"
+			return
+		fi
+
 		cutstr $1
 	}
 
@@ -96,6 +101,11 @@ fvm() {
 
 	#return the matching zip file to download. We'll only get the open source frameworks (mpl)
 	get_zip() { #takes a full version number as it's only argument
+		if [ `get_major $1` = "hero" ]; then
+			echo "flex_sdk_$1.zip"
+			return
+		fi
+
 		echo "flex_sdk_$1_mpl.zip"
 	}
 
@@ -135,14 +145,16 @@ fvm() {
 				return;
 			fi
 
-			#flex 3 downloads from: http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+3
-			#flex 4 downloads from: http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4
+			# flex 3 downloads from: http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+3
+			# flex 4 downloads from: http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+4
+			# flex 4.5 (Hero) downloads from: http://opensource.adobe.com/wiki/display/flexsdk/Download+Flex+Hero
 
-			#downloads of the form: http://opensource.adobe.com/wiki/display/flexsdk/download?build=3.4.0.6955&pkgtype=2
-			#(2 is for the open source sdk)
-			#which translate to:
-			#http://fpdownload.adobe.com/pub/flex/sdk/builds/flex'+release+'/'+pkgname+
-			#e.g. http://fpdownload.adobe.com/pub/flex/sdk/builds/flex3/flex_sdk_3.4.1.10084_mpl.zip
+			# Downloads of the form: http://opensource.adobe.com/wiki/display/flexsdk/download?build=3.4.0.6955&pkgtype=2
+			# (2 is for the open source sdk)
+			# which translate to:
+			# http://fpdownload.adobe.com/pub/flex/sdk/builds/flex'+release+'/'+pkgname+
+			# e.g. http://fpdownload.adobe.com/pub/flex/sdk/builds/flex3/flex_sdk_3.4.1.10084_mpl.zip
+			# no _mpl for the current Hero SDKS
 
 			VERSION=$(get_version $2)
 
@@ -281,7 +293,7 @@ fvm() {
 			fi
 
 			if [ $# -ne 2 ]; then
-				for v in 4 3; do #sdks to check against
+				for v in Hero 4 3; do #sdks to check against
 					fvm list-remote $v
 				done
 
